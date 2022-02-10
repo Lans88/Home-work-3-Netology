@@ -1,0 +1,102 @@
+/*
+Задача 1
+
+Вы разрабатываете библиотеку аудиотреков. Вам необходимо реализовать одну из категорий музыки, наполненную треками.
+
+Алгоритм выполнения
+
+Создайте объект трек.
+Определите в нем свойства имя, исполнитель, длительность и страна. Подумайте, где можно использовать enum.
+Создайте класс категория.
+Объявите в нем свойства название категории, список треков и количество треков в списке (экспериментируйте с "ленивыми" и вычисляемыми свойствами).
+Определите методы добавления и удаления треков в эту категорию.
+*/
+
+//Task 1:
+//Объявили структуру трека (имя, артист, длительность, страна)
+//привязали ее к протоколу, позволяющему использовать знак равенства
+struct Track: Equatable {
+    var name: String
+    var artist: String
+    var duration: Double
+    var country: String
+}
+//создали трек
+var track1 = Track(name: "Sonne", artist: "Rammstein", duration: 3.56, country: "Germany")
+//объявляем класс и привязываем к протоколу
+class Category: Equatable {
+    //сообщаем что с чем нужно сравнить
+    static func == (lhs: Category, rhs: Category) -> Bool {
+        lhs.nameCategory == rhs.nameCategory
+    }
+    //объявляем свойства
+    var nameCategory: String
+    lazy var playlist: [Track] = []
+    var amountTracks: Int
+    //инициализируем свойства
+    init(nameCategory: String, amountTracks: Int) {
+        self.nameCategory = nameCategory
+        self.amountTracks = amountTracks
+    }
+    //объявляем метод добавления трека
+    //на входе принимаемый трек для добавления
+    open func addTrackCategory (track: Track) -> [Track] {
+        //метод добавления элемента в массив
+        playlist.append(track)
+        amountTracks += 1
+        return playlist
+    }
+    //удаление выбранного трека
+    //на входе принимаемый трек
+    open func removeTrack (track: Track) {
+        //проверка трека на наличие в массиве
+        if playlist.firstIndex(of: track) != nil {
+            //удаление выбранного трека
+            playlist.removeAll{$0 == track}
+            amountTracks -= 1
+        }
+    }
+}
+
+var rock = Category(nameCategory: "Rock", amountTracks: 0)
+rock.addTrackCategory(track: track1)
+rock.removeTrack(track: track1)
+rock.addTrackCategory(track: track1)
+var track2 = Track(name: "Mutter", artist: "Rammstein", duration: 4.0, country: "Germany")
+print(rock.addTrackCategory(track: track2))
+rock.removeTrack(track: track2)
+print (rock.playlist)
+print(rock.amountTracks)
+
+/*
+Задача 2
+
+Доработайте свою библиотеку так, чтобы в ней было несколько категорий.
+
+Алгоритм выполнения
+
+Создайте класс библиотеки. Этот класс будет аналогичен классу категории, только хранить он должен список категорий.
+
+
+*/
+
+//Task 2:
+open class LibraryCategory {
+    var categoryMusic: [Category] = []
+    func insertCategory (category: Category) {
+        categoryMusic.append(category)
+    }
+}
+
+var trance = Category(nameCategory: "Trance", amountTracks: 0)
+var rap = Category(nameCategory: "Rap", amountTracks: 0)
+var library = LibraryCategory()
+library.insertCategory(category: trance)
+library.insertCategory(category: rap)
+library.categoryMusic
+library.categoryMusic.count
+print(library.categoryMusic)
+library.insertCategory(category: rock)
+for i in library.categoryMusic {
+    print(i.nameCategory)
+}
